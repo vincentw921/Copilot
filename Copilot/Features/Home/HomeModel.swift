@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 import CloudKit
 
 @MainActor
@@ -15,7 +16,23 @@ final class HomeModel: ObservableObject {
     }
 
     @Published var status: Status = .idle
+    @Published var items: [Item] = []
+    
+    private let viewContext: NSManagedObjectContext
     private let container: CKContainer = .default()
+    
+    init(viewContext: NSManagedObjectContext = PersistenceController.shared.container.viewContext) {
+        self.viewContext = viewContext
+        
+        // Refresh when CloudKit sync brings in new data
+        NotificationCenter.default.addObserver(
+            forName: .NSPersistentStoreRemoteChange,
+            object: viewContext.persistentStoreCoordinator,
+            queue: .main
+        ) { [weak self] _ in
+            Task { await self?.fetchData() }
+        }
+    }
 
     func fetchCloudID() {
         status = .loading
@@ -81,5 +98,57 @@ final class HomeModel: ObservableObject {
             }
         }
     }
+    
+    func fetchData() async {
+        status = .loading
+        do {
+            let req: NSFetchRequest<Item> = Item.fetchRequest()
+            // Optional: sort newest first
+            req.sortDescriptors = [NSSortDescriptor(keyPath: \Item.date, ascending: false)]
+            // If your dataset is large, set a fetchBatchSize
+            req.fetchBatchSize = 100
 
+            let results: [Item] = try await viewContext.perform {
+                try self.viewContext.fetch(req)
+            }
+            self.items = results
+            self.status = .success("Loaded \(results.count) records")
+        } catch {
+            self.status = .failure(error.localizedDescription)
+        }
+    }
+
+    func insertTestData(count: Int = 5) async {
+        do {
+            try await self.viewContext.perform {
+                for i in 0..<count {
+                    let it = Item(context: self.viewContext)
+                    it.id = UUID()
+                    it.date = Calendar.current.date(byAdding: .day, value: -i, to: .now)
+                    it.aircraftType = "C172"
+                    it.aircraftRegistration = "N\(Int.random(in: 1000...9999))\(["AB","CD","EF"].randomElement()!)"
+                    it.departureAirport = "KSNA"
+                    it.arrivalAirport = ["KLAX","KSQL","KPAO","KSBP"].randomElement()
+                    it.totalTime = Double.random(in: 0.6...2.2)
+                    it.picTime = it.totalTime
+                    it.dayTakeoffs = Int16(Int.random(in: 1...3))
+                    it.dayFullStopLandings = Int16(Int.random(in: 1...3))
+                }
+                try self.viewContext.save()
+            }
+            await fetchData() // if you have this, refresh your list
+        } catch {
+            status = .failure("Seed failed: \(error.localizedDescription)")
+        }
+    }
+    
+    func deleteAllItems() async throws {
+        try await self.viewContext.perform {
+            let fr: NSFetchRequest<Item> = Item.fetchRequest()
+            let all = try self.viewContext.fetch(fr)
+            all.forEach(self.viewContext.delete)
+            try self.viewContext.save()
+        }
+    }
+    
 }

@@ -9,6 +9,10 @@ import SwiftUI
 
 struct HomeView: View {
     @StateObject var model = HomeModel()
+    
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Item.date, ascending: false)]
+    ) private var items: FetchedResults<Item>
 
     var body: some View {
         VStack(spacing: 12) {
@@ -25,6 +29,16 @@ struct HomeView: View {
         .padding()
         .onAppear {
             if case .idle = model.status { model.fetchCloudID() }
+        }
+        
+        if case .success = model.status {
+            HStack {
+                Button("Insert Sample Items") { Task { await model.insertTestData() } }
+                Button("Clear All") { Task { try? await model.deleteAllItems() } }
+            }
+            List(items) { item in
+                Text(item.aircraftRegistration ?? "—")
+            }
         }
     }
 
