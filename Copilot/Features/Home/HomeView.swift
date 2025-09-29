@@ -30,11 +30,6 @@ struct HomeView: View {
         .onAppear {
             if case .idle = model.status { model.fetchCloudID() }
         }
-        if case .success = model.status {
-            List(items) { item in
-                Text(item.aircraftRegistration ?? "—")
-            }
-        }
         
         if case .success = model.status {
             HStack {
