@@ -2,12 +2,12 @@
 //  ContentView.swift
 //  Copilot
 //
-//  Created by Vincent Wang on 9/14/25.
+//  The app's main tab bar, shown once the user is signed into iCloud.
 //
 
 import SwiftUI
-import CoreData
 
+/// Top-level tab navigation: Home, Logbook, Calendar, Report, Profile.
 struct ContentView: View {
     var body: some View {
         TabView {
@@ -15,35 +15,35 @@ struct ContentView: View {
                 HomeView()
             }
             .tabItem {
-                Image(systemName: "house")
+                Label("Home", systemImage: "house")
             }
-            
+
             NavigationStack {
                 LogbookView()
             }
             .tabItem {
-                Image(systemName: "book")
+                Label("Logbook", systemImage: "book")
             }
-            
+
             NavigationStack {
                 CalendarView()
             }
             .tabItem {
-                Image(systemName: "calendar")
+                Label("Calendar", systemImage: "calendar")
             }
-            
+
             NavigationStack {
                 ReportView()
             }
             .tabItem {
-                Image(systemName: "list.clipboard")
+                Label("Report", systemImage: "list.clipboard")
             }
-            
+
             NavigationStack {
                 ProfileView()
             }
             .tabItem {
-                Image(systemName: "person")
+                Label("Profile", systemImage: "person")
             }
         }
     }
@@ -51,4 +51,6 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(AuthModel())
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
