@@ -14,9 +14,19 @@ struct PersistenceController {
     static let preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
-            newItem.date = Date()
+        // Seed a few realistic flights so SwiftUI previews have data.
+        for i in 0..<10 {
+            var entry = FlightEntry()
+            entry.date = Calendar.current.date(byAdding: .day, value: -i * 5, to: .now) ?? .now
+            entry.aircraftType = "C172"
+            entry.aircraftRegistration = "N12345"
+            entry.departureAirport = "KSNA"
+            entry.arrivalAirport = "KLAX"
+            entry.totalTime = 1.5
+            entry.picTime = 1.5
+            entry.dayTakeoffs = 2
+            entry.dayFullStopLandings = 2
+            entry.apply(to: Item(context: viewContext))
         }
         do {
             try viewContext.save()
