@@ -113,12 +113,11 @@ struct ReportView: View {
     }
 
     /// Share-sheet export of the full logbook as a spreadsheet-ready CSV.
+    /// The file is written up front and shared by URL so every share
+    /// destination (including "Save to Files") can read it.
     private func exportSection(entries: [FlightEntry], totals: LogbookTotals) -> some View {
         Section {
-            ShareLink(
-                item: LogbookCSVFile(entries: entries),
-                preview: SharePreview("Pilot Logbook CSV", image: Image(systemName: "tablecells"))
-            ) {
+            ShareLink(item: CSVExporter.exportFile(for: entries)) {
                 Label("Export Logbook as CSV", systemImage: "square.and.arrow.up")
             }
             .disabled(entries.isEmpty)

@@ -7,8 +7,6 @@
 //
 
 import Foundation
-import CoreTransferable
-import UniformTypeIdentifiers
 
 /// Builds CSV text from logbook entries.
 enum CSVExporter {
@@ -64,28 +62,25 @@ enum CSVExporter {
     }
 }
 
-/// A shareable CSV document for `ShareLink`. The CSV text is captured at
-/// initialization so sharing never touches Core Data objects off-thread.
-struct LogbookCSVFile: Transferable {
-    /// The full CSV contents to share.
-    let csvText: String
-    /// File name presented to the receiving app, e.g. "Logbook-2026-07-13.csv".
-    let filename: String
-
-    /// Creates a shareable export of `entries`, stamped with today's date.
-    init(entries: [FlightEntry], date: Date = Date()) {
-        csvText = CSVExporter.csv(for: entries)
+extension CSVExporter {
+    /// Writes `entries` as a CSV file in the temporary directory and
+    /// returns its URL, e.g. …/Logbook-2026-07-13.csv.
+    ///
+    /// Sharing a concrete file URL (rather than a `Transferable`
+    /// `FileRepresentation`) is what lets the share sheet's "Save to
+    /// Files" work — the file must already exist when the extension
+    /// receives it. The file is only rewritten when the contents changed,
+    /// so calling this from a view body is cheap.
+    static func exportFile(for entries: [FlightEntry], date: Date = Date()) -> URL {
         let stamp = DateFormatter()
         stamp.dateFormat = "yyyy-MM-dd"
-        filename = "Logbook-\(stamp.string(from: date)).csv"
-    }
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("Logbook-\(stamp.string(from: date)).csv")
 
-    static var transferRepresentation: some TransferRepresentation {
-        FileRepresentation(exportedContentType: .commaSeparatedText) { file in
-            let url = FileManager.default.temporaryDirectory
-                .appendingPathComponent(file.filename)
-            try file.csvText.write(to: url, atomically: true, encoding: .utf8)
-            return SentTransferredFile(url)
+        let contents = csv(for: entries)
+        if (try? String(contentsOf: url, encoding: .utf8)) != contents {
+            try? contents.write(to: url, atomically: true, encoding: .utf8)
         }
+        return url
     }
 }
