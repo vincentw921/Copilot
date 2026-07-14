@@ -75,7 +75,8 @@ struct MonthCalendarView: View {
 
     /// First day of the month currently on screen.
     @State private var displayedMonth = MonthGrid.startOfMonth(for: Date())
-    /// True while the month/year dropdowns replace the weekday header.
+    /// True while the month/year wheels replace the day grid, matching
+    /// the system date picker's behavior in the flight form.
     @State private var showMonthYearPicker = false
 
     private let calendar = Calendar.current
@@ -85,10 +86,11 @@ struct MonthCalendarView: View {
         VStack(spacing: 12) {
             header
             if showMonthYearPicker {
-                monthYearPickers
+                monthYearWheels
+            } else {
+                weekdayLabels
+                dayGrid
             }
-            weekdayLabels
-            dayGrid
         }
         .padding(.vertical, 4)
     }
@@ -101,40 +103,47 @@ struct MonthCalendarView: View {
     /// selected anyway.
     private var header: some View {
         HStack {
-            Button {
-                displayedMonth = MonthGrid.month(displayedMonth, offsetBy: -1)
-            } label: {
-                Image(systemName: "chevron.left")
-            }
-            Spacer()
-            // Tapping the title reveals dropdowns to jump straight to any
-            // month and year.
+            // Tapping the title swaps the day grid for month/year wheels,
+            // just like the system date picker in the flight form.
             Button {
                 withAnimation { showMonthYearPicker.toggle() }
             } label: {
                 HStack(spacing: 4) {
                     Text(displayedMonth, format: .dateTime.month(.wide).year())
                         .font(.headline)
-                    Image(systemName: "chevron.down")
+                    Image(systemName: "chevron.right")
                         .font(.caption.bold())
-                        .rotationEffect(showMonthYearPicker ? .degrees(180) : .zero)
+                        .rotationEffect(showMonthYearPicker ? .degrees(90) : .zero)
                 }
             }
-            .foregroundStyle(.primary)
+            .foregroundStyle(showMonthYearPicker ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
+
             Spacer()
-            Button {
-                displayedMonth = MonthGrid.month(displayedMonth, offsetBy: 1)
-            } label: {
-                Image(systemName: "chevron.right")
+
+            // The paging chevrons hide while the wheels are up, matching
+            // the system picker.
+            if !showMonthYearPicker {
+                Button {
+                    displayedMonth = MonthGrid.month(displayedMonth, offsetBy: -1)
+                } label: {
+                    Image(systemName: "chevron.left")
+                }
+                Button {
+                    displayedMonth = MonthGrid.month(displayedMonth, offsetBy: 1)
+                } label: {
+                    Image(systemName: "chevron.right")
+                }
+                .disabled(MonthGrid.month(displayedMonth, offsetBy: 1) > today)
+                .padding(.leading, 16)
             }
-            .disabled(MonthGrid.month(displayedMonth, offsetBy: 1) > today)
         }
         .buttonStyle(.borderless)
     }
 
-    /// Dropdown menus for jumping to a specific month and year.
-    private var monthYearPickers: some View {
-        HStack {
+    /// Side-by-side month and year wheels shown in place of the day grid,
+    /// the same interaction the system date picker uses.
+    private var monthYearWheels: some View {
+        HStack(spacing: 0) {
             Picker("Month", selection: monthBinding) {
                 ForEach(1...12, id: \.self) { month in
                     Text(DateFormatter().monthSymbols[month - 1]).tag(month)
@@ -146,13 +155,16 @@ struct MonthCalendarView: View {
                 }
             }
         }
-        .pickerStyle(.menu)
+        .pickerStyle(.wheel)
+        .frame(height: 214)
+        .clipped()
     }
 
-    /// The current year back through 60 years of logbook history.
+    /// The current year back through 60 years of logbook history,
+    /// ascending so scrolling down moves toward the present.
     private var selectableYears: [Int] {
         let currentYear = calendar.component(.year, from: Date())
-        return Array((currentYear - 60...currentYear).reversed())
+        return Array(currentYear - 60...currentYear)
     }
 
     /// Month component of the displayed month; setting it jumps the grid.
