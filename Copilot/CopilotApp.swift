@@ -20,7 +20,7 @@ struct RootView: View {
                 AuthView()          // <-- dedicated authentication view
 
             case .signedIn:
-                HomeView()          // <-- your real app UI
+                ContentView()       // <-- the main tab bar
             }
         }
         .task {
