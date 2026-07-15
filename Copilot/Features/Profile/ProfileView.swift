@@ -30,6 +30,7 @@ struct ProfileView: View {
             developerSection
             #endif
         }
+        .dismissKeyboardOnTap()
         .navigationTitle("Profile")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {

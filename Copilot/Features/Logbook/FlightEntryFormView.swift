@@ -64,9 +64,8 @@ struct FlightEntryFormView: View {
     /// Message shown when saving fails (e.g. the store is unavailable).
     @State private var saveError: String?
 
-    /// Regenerated on every date change to collapse the compact date
-    /// picker's popover as soon as a day is tapped.
-    @State private var datePickerID = UUID()
+    /// True while the inline calendar is expanded under the date row.
+    @State private var showDatePicker = false
 
     // Collapsible optional groups.
     @State private var showAdjustTimes = false
@@ -108,11 +107,15 @@ struct FlightEntryFormView: View {
                 .navigationTitle(item == nil ? "New Flight" : "Edit Flight")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
+                    // Color-coded so the actions read at a glance:
+                    // red discards, blue saves.
                     ToolbarItem(placement: .cancellationAction) {
                         Button("Cancel") { dismiss() }
+                            .tint(.red)
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Save") { save() }
+                            .tint(.blue)
                             .disabled(!entry.isValid)
                     }
                 }
@@ -137,12 +140,12 @@ struct FlightEntryFormView: View {
             trainingSection
             notesSection
         }
+        .dismissKeyboardOnTap()
     }
 
-    /// Field observers: date popover collapse, XC auto-check, profile fill.
+    /// Field observers: XC auto-check and saved-profile fill.
     private var fieldObservedForm: some View {
         formSections
-            .onChange(of: entry.date) { datePickerID = UUID() }
             .onChange(of: entry.departureAirport) { updateCrossCountryAutoCheck() }
             .onChange(of: entry.arrivalAirport) { updateCrossCountryAutoCheck() }
             .onChange(of: selectedAircraftID) { fillFromSelectedAircraft() }
@@ -171,11 +174,31 @@ struct FlightEntryFormView: View {
     /// unknown-airport warnings — all required by 61.51(b)(1).
     private var flightSection: some View {
         Section("Flight") {
-            // Flights can't be logged for the future (61.51 records what
-            // already happened), so the picker stops at today. The changing
-            // id collapses the popover right after a day is tapped.
-            DatePicker("Date", selection: $entry.date, in: ...Date.now, displayedComponents: .date)
-                .id(datePickerID)
+            // Custom calendar row instead of the system compact picker:
+            // it collapses on any day tap — even re-tapping the selected
+            // day, which the system popover ignores. Future days are
+            // blocked inside the calendar (61.51 records what already
+            // happened).
+            Button {
+                withAnimation { showDatePicker.toggle() }
+            } label: {
+                HStack {
+                    Text("Date")
+                        .foregroundStyle(.primary)
+                    Spacer()
+                    Text(entry.date, format: .dateTime.month(.abbreviated).day().year())
+                        .foregroundStyle(showDatePicker ? AnyShapeStyle(.tint) : AnyShapeStyle(.primary))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 6)
+                        .background(.quaternary.opacity(0.5), in: RoundedRectangle(cornerRadius: 8))
+                }
+            }
+            .buttonStyle(.plain)
+            if showDatePicker {
+                MonthCalendarView(selectedDate: $entry.date, highlightedDays: []) {
+                    withAnimation { showDatePicker = false }
+                }
+            }
 
             // Either pick a saved profile or enter the aircraft manually.
             // The navigationLink style renders options as a list, which
@@ -456,6 +479,10 @@ struct HoursField: View {
 /// FAA category picker with a dependent class picker (14 CFR 61.5).
 /// The class list follows the chosen category and disappears entirely
 /// for categories without class ratings (Powered Lift, Glider).
+///
+/// Both pickers use the navigationLink style: unlike a menu, it honors
+/// the bold/grey styling that sets "Not Specified" apart from the real
+/// options (mirroring "Enter Manually" in the aircraft picker).
 struct CategoryClassPickers: View {
     @Binding var category: AircraftCategory?
     @Binding var aircraftClass: AircraftClass?
@@ -463,13 +490,14 @@ struct CategoryClassPickers: View {
     var body: some View {
         Picker("Category", selection: $category) {
             Text("Not Specified")
-                .italic()
+                .bold()
                 .foregroundStyle(.secondary)
                 .tag(nil as AircraftCategory?)
             ForEach(AircraftCategory.allCases) { category in
                 Text(category.rawValue).tag(Optional(category))
             }
         }
+        .pickerStyle(.navigationLink)
         .onChange(of: category) {
             // Drop a class that doesn't belong to the new category.
             if let aircraftClass, !(category?.classes.contains(aircraftClass) ?? false) {
@@ -480,13 +508,14 @@ struct CategoryClassPickers: View {
         if let category, !category.classes.isEmpty {
             Picker("Class", selection: $aircraftClass) {
                 Text("Not Specified")
-                    .italic()
+                    .bold()
                     .foregroundStyle(.secondary)
                     .tag(nil as AircraftClass?)
                 ForEach(category.classes) { aircraftClass in
                     Text(aircraftClass.rawValue).tag(Optional(aircraftClass))
                 }
             }
+            .pickerStyle(.navigationLink)
         }
     }
 }
