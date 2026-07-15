@@ -153,14 +153,19 @@ struct AircraftFormView: View {
                     Text("Optional. When left empty, the profile is shown by its registration.")
                 }
             }
+            .dismissKeyboardOnTap()
             .navigationTitle(aircraft == nil ? "New Aircraft" : "Edit Aircraft")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                // Color-coded so the actions read at a glance:
+                // red discards, blue saves.
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
+                        .tint(.red)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") { save() }
+                        .tint(.blue)
                         .disabled(!isValid)
                 }
             }
