@@ -76,6 +76,7 @@ struct LogbookView: View {
             }
         }
         .searchable(text: $searchText, prompt: "Registration, type, or airport")
+        .dismissKeyboardOnTap()
     }
 
     /// Entries matching the search text (all entries when the search is empty).

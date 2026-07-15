@@ -66,18 +66,36 @@ struct CalendarView: View {
 }
 
 /// A single-month calendar grid. Days in `highlightedDays` get a green
-/// circle; the selected day gets a ring. Chevrons move between months.
+/// circle; the selected day gets a ring; today's number is tinted.
+/// Chevrons move between months.
 struct MonthCalendarView: View {
     /// The day the user has tapped.
     @Binding var selectedDate: Date
     /// Start-of-day dates to paint green (days with flights).
     let highlightedDays: Set<Date>
+    /// Called after every day tap — including a tap on the day that is
+    /// already selected — so hosts (like the flight form) can collapse
+    /// the calendar.
+    var onDaySelected: (() -> Void)?
 
     /// First day of the month currently on screen.
-    @State private var displayedMonth = MonthGrid.startOfMonth(for: Date())
+    @State private var displayedMonth: Date
     /// True while the month/year wheels replace the day grid, matching
     /// the system date picker's behavior in the flight form.
     @State private var showMonthYearPicker = false
+
+    init(
+        selectedDate: Binding<Date>,
+        highlightedDays: Set<Date>,
+        onDaySelected: (() -> Void)? = nil
+    ) {
+        _selectedDate = selectedDate
+        self.highlightedDays = highlightedDays
+        self.onDaySelected = onDaySelected
+        // Open on the month of the current selection (today for the
+        // Calendar tab, the flight's date when editing an old entry).
+        _displayedMonth = State(initialValue: MonthGrid.startOfMonth(for: selectedDate.wrappedValue))
+    }
 
     private let calendar = Calendar.current
     private let columns = Array(repeating: GridItem(.flexible()), count: 7)
@@ -217,22 +235,26 @@ struct MonthCalendarView: View {
     }
 
     /// One tappable day: green fill when a flight exists, ring when
-    /// selected. Future days are greyed out and can't be tapped.
+    /// selected, tinted number for today (matching the system date
+    /// picker). Future days are greyed out and can't be tapped.
     private func dayCell(for day: Date) -> some View {
         let hasFlight = highlightedDays.contains(calendar.startOfDay(for: day))
         let isSelected = calendar.isDate(day, inSameDayAs: selectedDate)
         let isFuture = calendar.startOfDay(for: day) > today
+        let isToday = calendar.isDateInToday(day)
 
         return Button {
             selectedDate = day
+            onDaySelected?()
         } label: {
             Text(day, format: .dateTime.day())
                 .font(.callout)
                 .monospacedDigit()
-                .fontWeight(hasFlight ? .semibold : .regular)
+                .fontWeight(hasFlight || isToday ? .semibold : .regular)
                 .foregroundStyle(
                     isFuture ? AnyShapeStyle(.tertiary)
                         : hasFlight ? AnyShapeStyle(.white)
+                        : isToday ? AnyShapeStyle(.tint)
                         : AnyShapeStyle(.primary)
                 )
                 .frame(width: 36, height: 36)

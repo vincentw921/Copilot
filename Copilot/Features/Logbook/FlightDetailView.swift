@@ -39,11 +39,15 @@ struct FlightDetailView: View {
             .navigationTitle(entry.date.formatted(date: .abbreviated, time: .omitted))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                // Color-coded so the actions read at a glance: blue
+                // opens the editor, green closes the preview.
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Edit") { isEditing = true }
+                        .tint(.blue)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
+                        .tint(.green)
                 }
             }
             .sheet(isPresented: $isEditing) {
