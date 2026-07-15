@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support — Copilot Digital Logbook</title>
+<meta name="description" content="Support, FAQ, troubleshooting, bug reports, and feature requests for Copilot Digital Logbook, the FAA pilot logbook app for iPhone.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site">
+    <div class="header-inner">
+        <div class="logo" aria-hidden="true">&#9992;&#65039;</div>
+        <div>
+            <div class="site-title">Copilot Digital Logbook</div>
+            <div class="site-sub">Support</div>
+        </div>
+        <nav class="site-nav">
+            <a href="index.html" aria-current="page">Support</a>
+            <a href="privacy.html">Privacy Policy</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <h1>Support</h1>
+    <p class="lede">Help with Copilot Digital Logbook, the FAA pilot logbook for iPhone.</p>
+
+    <section class="card" id="contact">
+        <h2>Contact</h2>
+        <p>The fastest way to reach us is by email. We aim to reply within 2&ndash;3 business days.</p>
+        <div class="contact-box">
+            &#9993;&#65039; <a href="mailto:copilot.logbook.support@gmail.com">copilot.logbook.support@gmail.com</a>
+        </div>
+    </section>
+
+    <section class="card" id="faq">
+        <h2>Frequently Asked Questions</h2>
+
+        <details>
+            <summary>Do I need to create an account?</summary>
+            <p>No. Copilot Digital Logbook has no accounts and no sign-up. Your logbook is stored on
+            your device and, if you are signed into iCloud, synced through your own private iCloud
+            storage.</p>
+        </details>
+
+        <details>
+            <summary>How does iCloud sync work?</summary>
+            <p>When your iPhone is signed into iCloud, every flight you log is automatically saved to
+            your personal iCloud database and appears on your other devices signed into the same
+            Apple&nbsp;ID. No setup is needed &mdash; it happens in the background.</p>
+        </details>
+
+        <details>
+            <summary>Does the app work offline?</summary>
+            <p>Yes. Everything works without a connection &mdash; logging flights, reports, and exports.
+            iCloud sync simply catches up the next time you're online.</p>
+        </details>
+
+        <details>
+            <summary>How do I export my logbook?</summary>
+            <p>Open the <strong>Reports</strong> tab and tap <strong>Export CSV</strong>. You can save the
+            file to Files, AirDrop it, or share it to any app. The CSV columns follow the standard
+            paper-logbook layout, so it imports cleanly into spreadsheets and other logbook software.</p>
+        </details>
+
+        <details>
+            <summary>Is a digital logbook acceptable to the FAA?</summary>
+            <p>Yes. 14&nbsp;CFR&nbsp;61.51 does not require a paper logbook &mdash; it requires that
+            required entries be recorded in a &ldquo;reliable record.&rdquo; Copilot records every field
+            61.51 calls for, including flight time by category, landings, and instrument time. That
+            said, always keep backups of records you rely on for a checkride or rating.</p>
+        </details>
+
+        <details>
+            <summary>What are saved aircraft profiles?</summary>
+            <p>Under <strong>Profile &rarr; My Aircraft</strong>, you can save aircraft you fly often
+            (registration, type, category, and class). The New Flight form can then fill in those
+            fields with one tap instead of retyping them.</p>
+        </details>
+
+        <details>
+            <summary>Why did the Cross Country box check itself?</summary>
+            <p>When both airport identifiers are recognized and the route is 50&nbsp;NM or more, the app
+            checks Cross Country automatically per 14&nbsp;CFR&nbsp;61.1. You can always uncheck it or
+            adjust the cross-country time.</p>
+        </details>
+
+        <details>
+            <summary>How do I log NVG time?</summary>
+            <p>Turn on <strong>NVG logging</strong> in <strong>Profile &rarr; Settings</strong>. An NVG
+            checkbox and time column then appear in the flight form.</p>
+        </details>
+    </section>
+
+    <section class="card" id="troubleshooting">
+        <h2>Troubleshooting</h2>
+
+        <details>
+            <summary>Flights aren't syncing between my devices</summary>
+            <ol>
+                <li>Confirm both devices are signed into the <strong>same Apple&nbsp;ID</strong>
+                    (Settings &rarr; your name).</li>
+                <li>Check that iCloud is enabled for the app: Settings &rarr; your name &rarr; iCloud
+                    &rarr; Saved to iCloud &rarr; make sure <strong>Copilot Digital Logbook</strong> is on.</li>
+                <li>Make sure both devices are online. Large first syncs can take a few minutes.</li>
+                <li>Open the app's <strong>Profile</strong> tab &mdash; it shows your current iCloud
+                    status. If it says &ldquo;Not signed into iCloud,&rdquo; sync is paused until you
+                    sign in.</li>
+            </ol>
+        </details>
+
+        <details>
+            <summary>The Profile tab says "Not signed into iCloud"</summary>
+            <p>Your logbook is still safe on the device &mdash; it just isn't syncing. Sign into iCloud
+            in the iOS Settings app, then reopen Copilot. New and existing entries upload
+            automatically.</p>
+        </details>
+
+        <details>
+            <summary>My data is missing after reinstalling the app</summary>
+            <p>If you were signed into iCloud when you used the app before, your logbook restores
+            automatically a few moments after the first launch &mdash; keep the app open and online. If
+            you were <em>not</em> signed into iCloud, data lived only on the device and was removed with
+            the app; restore it from a device backup if you have one.</p>
+        </details>
+
+        <details>
+            <summary>CSV export won't save to Files</summary>
+            <p>Update to the latest version of the app &mdash; this was a known issue in early builds.
+            If it persists, try sharing to a different destination (e.g. Mail or AirDrop) and let us
+            know via a bug report.</p>
+        </details>
+
+        <details>
+            <summary>An airport shows "not found — check the identifier"</summary>
+            <p>The app checks identifiers against a database of public airports to compute route
+            distance. Private strips, heliports, or international fields may not be listed &mdash; the
+            warning is only advisory, and you can log the flight anyway. Cross-country auto-detection
+            just won't compute a distance for that route.</p>
+        </details>
+
+        <details>
+            <summary>Something looks wrong or the app misbehaves</summary>
+            <ol>
+                <li>Close the app fully (swipe up from the app switcher) and reopen it.</li>
+                <li>Check the App&nbsp;Store for an update.</li>
+                <li>Restart the device.</li>
+                <li>Still stuck? Send us a bug report &mdash; see below.</li>
+            </ol>
+        </details>
+    </section>
+
+    <section class="card" id="bugs">
+        <h2>Reporting a Bug</h2>
+        <p>Email <a href="mailto:copilot.logbook.support@gmail.com?subject=Bug%20Report">copilot.logbook.support@gmail.com</a>
+        with the subject line <code>Bug Report</code> and include:</p>
+        <ul>
+            <li><strong>What happened</strong>, and what you expected to happen instead.</li>
+            <li><strong>Steps to reproduce</strong> &mdash; the taps that lead to the problem.</li>
+            <li><strong>Device and iOS version</strong> (e.g. iPhone 16 Pro, iOS 26.1 &mdash; Settings &rarr; General &rarr; About).</li>
+            <li><strong>App version</strong> (shown on the App&nbsp;Store page under &ldquo;What's New&rdquo;).</li>
+            <li><strong>Screenshots or a screen recording</strong>, if possible.</li>
+        </ul>
+        <p class="note">Please don't include your logbook data unless we ask for it &mdash; a description
+        of the entry (e.g. &ldquo;a 2.0&nbsp;hr night flight with 3 landings&rdquo;) is usually enough.</p>
+    </section>
+
+    <section class="card" id="features">
+        <h2>Feature Requests</h2>
+        <p>We build Copilot for working pilots, and most improvements start as a pilot's suggestion.
+        Email <a href="mailto:copilot.logbook.support@gmail.com?subject=Feature%20Request">copilot.logbook.support@gmail.com</a>
+        with the subject line <code>Feature Request</code> and tell us:</p>
+        <ul>
+            <li>What you're trying to do (the goal, not just the button you want).</li>
+            <li>How you handle it today &mdash; paper logbook, spreadsheet, another app.</li>
+            <li>How often it comes up in your flying.</li>
+        </ul>
+        <p>We read every request. We can't promise every feature, but real use cases directly shape
+        the roadmap.</p>
+    </section>
+</main>
+
+<footer class="site">
+    <p>Copilot Digital Logbook &middot; <a href="privacy.html">Privacy Policy</a> &middot;
+    <a href="mailto:copilot.logbook.support@gmail.com">copilot.logbook.support@gmail.com</a></p>
+</footer>
+
+</body>
+</html>
