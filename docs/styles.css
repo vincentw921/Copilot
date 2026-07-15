@@ -1,0 +1,153 @@
+/* Copilot Digital Logbook — support site styles.
+   Plain CSS, no build step. Light/dark via prefers-color-scheme. */
+
+:root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --text: #1c1c1e;
+    --muted: #6e6e73;
+    --accent: #0a66d0;
+    --accent-soft: #e8f0fb;
+    --border: #e3e4e8;
+    --warn: #b25000;
+    color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #101114;
+        --card: #1b1c20;
+        --text: #f2f2f6;
+        --muted: #9a9aa1;
+        --accent: #5aa2f0;
+        --accent-soft: #17263a;
+        --border: #2b2c31;
+        --warn: #e8964a;
+    }
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+header.site {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 1.1rem 1.25rem;
+}
+
+.header-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 9px;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex: none;
+}
+
+.site-title { font-weight: 700; font-size: 1.05rem; }
+.site-sub { color: var(--muted); font-size: 0.85rem; }
+
+nav.site-nav { margin-left: auto; display: flex; gap: 1rem; }
+nav.site-nav a { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.95rem; }
+nav.site-nav a:hover { text-decoration: underline; }
+
+main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 3rem;
+}
+
+h1 { font-size: 1.7rem; margin: 0.5rem 0 0.25rem; }
+.lede { color: var(--muted); margin-top: 0; }
+
+section.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.4rem;
+    margin: 1.25rem 0;
+}
+
+section.card h2 {
+    margin-top: 0;
+    font-size: 1.2rem;
+}
+
+a { color: var(--accent); }
+
+.contact-box {
+    background: var(--accent-soft);
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    font-size: 1.02rem;
+}
+
+details {
+    border-bottom: 1px solid var(--border);
+    padding: 0.55rem 0;
+}
+details:last-of-type { border-bottom: none; }
+
+summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0.2rem 0;
+}
+summary:hover { color: var(--accent); }
+details > p, details > ol, details > ul { margin: 0.5rem 0 0.35rem; color: var(--text); }
+
+ol li, ul li { margin: 0.3rem 0; }
+
+code {
+    background: var(--accent-soft);
+    border-radius: 5px;
+    padding: 0.1rem 0.35rem;
+    font-size: 0.9em;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.95rem;
+}
+th, td {
+    text-align: left;
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+th { color: var(--muted); font-weight: 600; }
+
+.note {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+footer.site {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 1.25rem 2.5rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+footer.site a { color: var(--muted); }
