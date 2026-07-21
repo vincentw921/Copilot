@@ -11,6 +11,7 @@
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
         <attribute name="actualInstrumentTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="aircraftClass" optional="YES" attributeType="String"/>
+        <attribute name="approachCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="aircraftRegistration" optional="YES" attributeType="String"/>
         <attribute name="aircraftType" optional="YES" attributeType="String"/>
         <attribute name="arrivalAirport" optional="YES" attributeType="String"/>
@@ -24,6 +25,7 @@
         <attribute name="dualReceivedTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="groundTrainingGivenTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="groundTrainingReceivedTime" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="holdCount" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="nightFullStopLandings" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="nightNonFullStopLandings" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
