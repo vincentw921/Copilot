@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Copilot wordmark (same art as the iOS app icon), inset so it
+     stays inside the adaptive-icon safe zone under any launcher mask. -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_launcher_logo"
+    android:insetLeft="15%"
+    android:insetTop="15%"
+    android:insetRight="15%"
+    android:insetBottom="15%" />
