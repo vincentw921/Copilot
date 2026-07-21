@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Copilot</string>
+    <!-- Matches the iOS product name from the App Store rebrand. -->
+    <string name="app_name">Copilot Digital Logbook</string>
 </resources>
