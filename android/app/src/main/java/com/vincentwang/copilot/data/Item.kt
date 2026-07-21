@@ -1,5 +1,6 @@
 package com.vincentwang.copilot.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -10,6 +11,10 @@ data class Item(
     @PrimaryKey val id: String,
     val date: Long? = null,
     val aircraftType: String? = null,
+    /** FAA category display name ("Airplane"), when specified. */
+    val category: String? = null,
+    /** FAA class display name ("Single-Engine Land"), when specified. */
+    val aircraftClass: String? = null,
     val aircraftRegistration: String? = null,
     val departureAirport: String? = null,
     val arrivalAirport: String? = null,
@@ -30,12 +35,19 @@ data class Item(
     val dayTakeoffs: Int = 0,
     val nightTakeoffs: Int = 0,
     val dayFullStopLandings: Int = 0,
-    val nightFullStopLandings: Int = 0
+    val nightFullStopLandings: Int = 0,
+    @ColumnInfo(defaultValue = "0")
+    val dayNonFullStopLandings: Int = 0,
+    @ColumnInfo(defaultValue = "0")
+    val nightNonFullStopLandings: Int = 0,
+    val notes: String? = null
 ) {
     fun toMap(): Map<String, Any?> = mapOf(
         "id" to id,
         "date" to date,
         "aircraftType" to aircraftType,
+        "category" to category,
+        "aircraftClass" to aircraftClass,
         "aircraftRegistration" to aircraftRegistration,
         "departureAirport" to departureAirport,
         "arrivalAirport" to arrivalAirport,
@@ -56,7 +68,10 @@ data class Item(
         "dayTakeoffs" to dayTakeoffs,
         "nightTakeoffs" to nightTakeoffs,
         "dayFullStopLandings" to dayFullStopLandings,
-        "nightFullStopLandings" to nightFullStopLandings
+        "nightFullStopLandings" to nightFullStopLandings,
+        "dayNonFullStopLandings" to dayNonFullStopLandings,
+        "nightNonFullStopLandings" to nightNonFullStopLandings,
+        "notes" to notes
     )
 
     companion object {
@@ -68,6 +83,8 @@ data class Item(
                 id = id,
                 date = (data["date"] as? Number)?.toLong(),
                 aircraftType = data["aircraftType"] as? String,
+                category = data["category"] as? String,
+                aircraftClass = data["aircraftClass"] as? String,
                 aircraftRegistration = data["aircraftRegistration"] as? String,
                 departureAirport = data["departureAirport"] as? String,
                 arrivalAirport = data["arrivalAirport"] as? String,
@@ -88,7 +105,10 @@ data class Item(
                 dayTakeoffs = int("dayTakeoffs"),
                 nightTakeoffs = int("nightTakeoffs"),
                 dayFullStopLandings = int("dayFullStopLandings"),
-                nightFullStopLandings = int("nightFullStopLandings")
+                nightFullStopLandings = int("nightFullStopLandings"),
+                dayNonFullStopLandings = int("dayNonFullStopLandings"),
+                nightNonFullStopLandings = int("nightNonFullStopLandings"),
+                notes = data["notes"] as? String
             )
         }
     }
