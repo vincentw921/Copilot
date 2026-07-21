@@ -43,18 +43,21 @@ struct ReportView: View {
 
     // MARK: Sections
 
-    /// Passenger-carrying currency per 61.57(a)/(b) over the last 90 days.
+    /// Passenger-carrying currency per 61.57(a)/(b) over the last 90 days,
+    /// plus instrument currency per 61.57(c) over the last 6 months.
     private func currencySection(entries: [FlightEntry]) -> some View {
         let day = LogbookStats.dayCurrency(for: entries)
         let night = LogbookStats.nightCurrency(for: entries)
+        let instrument = LogbookStats.instrumentCurrency(for: entries)
 
         return Section {
             CurrencyRow(title: "Day Passengers", status: day)
             CurrencyRow(title: "Night Passengers", status: night)
+            InstrumentCurrencyRow(status: instrument)
         } header: {
-            Text("Currency (last 90 days)")
+            Text("Currency")
         } footer: {
-            Text("14 CFR 61.57 requires 3 takeoffs and 3 landings within the preceding 90 days (full-stop at night) to carry passengers.")
+            Text("14 CFR 61.57 requires 3 takeoffs and 3 landings within the preceding 90 days (full-stop at night) to carry passengers, and 6 approaches plus holding procedures within the preceding 6 months to fly in instrument conditions.")
         }
     }
 
@@ -141,6 +144,24 @@ struct CurrencyRow: View {
             Text(title)
             Spacer()
             Text("\(status.takeoffs) T/O · \(status.landings) LDG")
+                .foregroundStyle(.secondary)
+                .monospacedDigit()
+        }
+    }
+}
+
+/// Green/red instrument-currency line: approach count plus whether
+/// holding procedures were logged within the window.
+struct InstrumentCurrencyRow: View {
+    let status: InstrumentCurrencyStatus
+
+    var body: some View {
+        HStack {
+            Image(systemName: status.isCurrent ? "checkmark.circle.fill" : "xmark.circle.fill")
+                .foregroundStyle(status.isCurrent ? .green : .red)
+            Text("Instrument")
+            Spacer()
+            Text("\(status.approaches) APP · \(status.holds) HOLD")
                 .foregroundStyle(.secondary)
                 .monospacedDigit()
         }

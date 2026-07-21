@@ -314,13 +314,19 @@ struct FlightEntryFormView: View {
         }
     }
 
-    /// Actual/simulated instrument time — optional, 61.51(b)(3).
+    /// Actual/simulated instrument time — optional, 61.51(b)(3) — plus the
+    /// approach count and holding-procedures flag that feed 61.57(c)
+    /// instrument currency on the Report tab.
     private var instrumentSection: some View {
         Section {
             DisclosureGroup("Instrument", isExpanded: $showInstrument) {
                 HoursField(label: "Actual Instrument", value: $entry.actualInstrumentTime)
                 HoursField(label: "Simulated Instrument", value: $entry.simulatedInstrumentTime)
+                CountField(label: "Approaches", value: $entry.approachCount)
+                CountField(label: "Holds", value: $entry.holdCount)
             }
+        } footer: {
+            Text("Approaches and holding procedures count toward 61.57(c) instrument currency.")
         }
     }
 

@@ -18,6 +18,8 @@ private func makeEntry(
     dayFullStopLandings: Int = 0,
     nightTakeoffs: Int = 0,
     nightFullStopLandings: Int = 0,
+    approachCount: Int = 0,
+    holdCount: Int = 0,
     notes: String = ""
 ) -> FlightEntry {
     var entry = FlightEntry()
@@ -31,6 +33,8 @@ private func makeEntry(
     entry.dayFullStopLandings = dayFullStopLandings
     entry.nightTakeoffs = nightTakeoffs
     entry.nightFullStopLandings = nightFullStopLandings
+    entry.approachCount = approachCount
+    entry.holdCount = holdCount
     entry.notes = notes
     return entry
 }
@@ -88,6 +92,36 @@ struct LogbookStatsTests {
         ]
         let status = LogbookStats.dayCurrency(for: entries)
         #expect(status.takeoffs == 0)
+        #expect(!status.isCurrent)
+    }
+
+    @Test func instrumentCurrencyRequiresApproachesAndHolds() {
+        let entries = [
+            makeEntry(daysAgo: 30, approachCount: 4, holdCount: 1),
+            makeEntry(daysAgo: 60, approachCount: 2),
+        ]
+        let status = LogbookStats.instrumentCurrency(for: entries)
+        #expect(status.approaches == 6)
+        #expect(status.holds == 1)
+        #expect(status.isCurrent)
+    }
+
+    @Test func instrumentCurrencyFailsWithoutHolds() {
+        // 6 approaches but no holding procedures logged.
+        let entries = [makeEntry(daysAgo: 10, approachCount: 6)]
+        let status = LogbookStats.instrumentCurrency(for: entries)
+        #expect(status.approaches == 6)
+        #expect(status.holds == 0)
+        #expect(!status.isCurrent)
+    }
+
+    @Test func instrumentCurrencyExcludesFlightsOlderThan6Months() {
+        let entries = [
+            makeEntry(daysAgo: 200, approachCount: 6, holdCount: 2),
+        ]
+        let status = LogbookStats.instrumentCurrency(for: entries)
+        #expect(status.approaches == 0)
+        #expect(status.holds == 0)
         #expect(!status.isCurrent)
     }
 

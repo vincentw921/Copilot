@@ -54,6 +54,12 @@ struct FlightEntry: Identifiable, Equatable {
     var actualInstrumentTime: Double = 0
     /// Simulated instrument time (under the hood).
     var simulatedInstrumentTime: Double = 0
+    /// Instrument approaches flown, counted toward 61.57(c) currency.
+    var approachCount: Int = 0
+    /// Holding procedures performed, counted toward the other half of the
+    /// 61.57(c) instrument currency requirement (along with intercepting
+    /// and tracking courses through electronic navigation).
+    var holdCount: Int = 0
 
     // MARK: Takeoffs and landings
     var dayTakeoffs: Int = 0
@@ -123,6 +129,8 @@ extension FlightEntry {
         nvgTime = item.nvgTime
         actualInstrumentTime = item.actualInstrumentTime
         simulatedInstrumentTime = item.simulatedInstrumentTime
+        approachCount = Int(item.approachCount)
+        holdCount = Int(item.holdCount)
         dayTakeoffs = Int(item.dayTakeoffs)
         dayFullStopLandings = Int(item.dayFullStopLandings)
         dayNonFullStopLandings = Int(item.dayNonFullStopLandings)
@@ -157,6 +165,8 @@ extension FlightEntry {
         item.nvgTime = nvgTime
         item.actualInstrumentTime = actualInstrumentTime
         item.simulatedInstrumentTime = simulatedInstrumentTime
+        item.approachCount = Int16(clamping: approachCount)
+        item.holdCount = Int16(clamping: holdCount)
         item.dayTakeoffs = Int16(clamping: dayTakeoffs)
         item.dayFullStopLandings = Int16(clamping: dayFullStopLandings)
         item.dayNonFullStopLandings = Int16(clamping: dayNonFullStopLandings)

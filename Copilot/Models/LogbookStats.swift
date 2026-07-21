@@ -47,6 +47,19 @@ struct CurrencyStatus {
     var isCurrent: Bool { takeoffs >= 3 && landings >= 3 }
 }
 
+/// Result of a 14 CFR 61.57(c) instrument currency check.
+struct InstrumentCurrencyStatus {
+    /// Instrument approaches logged within the preceding 6 calendar months.
+    var approaches: Int
+    /// Holding procedures logged within the same window.
+    var holds: Int
+
+    /// True when both parts of 61.57(c) are satisfied: 6 approaches, plus
+    /// at least one holding procedure (and course tracking), within the
+    /// preceding 6 months.
+    var isCurrent: Bool { approaches >= 6 && holds >= 1 }
+}
+
 /// Total time flown in one category (and class, when logged).
 struct CategoryClassTotal: Identifiable {
     let category: AircraftCategory
@@ -134,8 +147,25 @@ enum LogbookStats {
         )
     }
 
-    /// The start of the preceding-90-day window used by 61.57.
+    /// Instrument currency per 61.57(c): 6 instrument approaches, holding
+    /// procedures, and intercepting/tracking courses, all within the
+    /// preceding 6 calendar months.
+    static func instrumentCurrency(for entries: [FlightEntry], asOf now: Date = Date()) -> InstrumentCurrencyStatus {
+        let start = instrumentWindowStart(from: now)
+        let recent = entries.filter { $0.date >= start }
+        return InstrumentCurrencyStatus(
+            approaches: recent.reduce(0) { $0 + $1.approachCount },
+            holds: recent.reduce(0) { $0 + $1.holdCount }
+        )
+    }
+
+    /// The start of the preceding-90-day window used by 61.57(a)/(b).
     private static func windowStart(from now: Date) -> Date {
         Calendar.current.date(byAdding: .day, value: -90, to: now) ?? now
+    }
+
+    /// The start of the preceding-6-month window used by 61.57(c).
+    private static func instrumentWindowStart(from now: Date) -> Date {
+        Calendar.current.date(byAdding: .month, value: -6, to: now) ?? now
     }
 }
