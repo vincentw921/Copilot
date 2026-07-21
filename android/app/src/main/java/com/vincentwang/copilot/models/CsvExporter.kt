@@ -15,7 +15,7 @@ object CsvExporter {
     val headers = listOf(
         "Date", "Aircraft Type", "Category", "Class", "Registration", "From", "To",
         "Total Time", "PIC", "SIC", "Solo", "Cross Country", "Night", "NVG",
-        "Actual Instrument", "Simulated Instrument",
+        "Actual Instrument", "Simulated Instrument", "Approaches", "Holds",
         "Day Takeoffs", "Day Full-Stop Landings", "Day Non-Full-Stop Landings",
         "Night Takeoffs", "Night Full-Stop Landings", "Night Non-Full-Stop Landings",
         "Dual Given", "Dual Received", "Simulator",
@@ -39,6 +39,7 @@ object CsvExporter {
                 hours(e.totalTime), hours(e.picTime), hours(e.sicTime),
                 hours(e.soloTime), hours(e.xcTime), hours(e.nightTime), hours(e.nvgTime),
                 hours(e.actualInstrumentTime), hours(e.simulatedInstrumentTime),
+                e.approachCount.toString(), e.holdCount.toString(),
                 e.dayTakeoffs.toString(), e.dayFullStopLandings.toString(),
                 e.dayNonFullStopLandings.toString(),
                 e.nightTakeoffs.toString(), e.nightFullStopLandings.toString(),

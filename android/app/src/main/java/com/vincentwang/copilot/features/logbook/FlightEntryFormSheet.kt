@@ -402,8 +402,12 @@ fun FlightEntryFormSheet(
                 }
             }
 
-            // MARK: Instrument (61.51(b)(3)).
-            FormSection {
+            // MARK: Instrument (61.51(b)(3)), plus the approach and hold
+            // counts that feed 61.57(c) instrument currency on the Report tab.
+            FormSection(
+                footer = "Approaches and holding procedures count toward " +
+                    "61.57(c) instrument currency."
+            ) {
                 DisclosureGroup(
                     "Instrument",
                     expanded = showInstrument,
@@ -414,6 +418,12 @@ fun FlightEntryFormSheet(
                     }
                     HoursField("Simulated Instrument", entry.simulatedInstrumentTime) {
                         entry = entry.copy(simulatedInstrumentTime = it)
+                    }
+                    CountField("Approaches", entry.approachCount) {
+                        entry = entry.copy(approachCount = it)
+                    }
+                    CountField("Holds", entry.holdCount) {
+                        entry = entry.copy(holdCount = it)
                     }
                 }
             }

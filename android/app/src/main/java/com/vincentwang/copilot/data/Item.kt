@@ -26,6 +26,10 @@ data class Item(
     val xcTime: Double = 0.0,
     val actualInstrumentTime: Double = 0.0,
     val simulatedInstrumentTime: Double = 0.0,
+    @ColumnInfo(defaultValue = "0")
+    val approachCount: Int = 0,
+    @ColumnInfo(defaultValue = "0")
+    val holdCount: Int = 0,
     val simulatorTime: Double = 0.0,
     val nvgTime: Double = 0.0,
     val dualGivenTime: Double = 0.0,
@@ -59,6 +63,8 @@ data class Item(
         "xcTime" to xcTime,
         "actualInstrumentTime" to actualInstrumentTime,
         "simulatedInstrumentTime" to simulatedInstrumentTime,
+        "approachCount" to approachCount,
+        "holdCount" to holdCount,
         "simulatorTime" to simulatorTime,
         "nvgTime" to nvgTime,
         "dualGivenTime" to dualGivenTime,
@@ -96,6 +102,8 @@ data class Item(
                 xcTime = double("xcTime"),
                 actualInstrumentTime = double("actualInstrumentTime"),
                 simulatedInstrumentTime = double("simulatedInstrumentTime"),
+                approachCount = int("approachCount"),
+                holdCount = int("holdCount"),
                 simulatorTime = double("simulatorTime"),
                 nvgTime = double("nvgTime"),
                 dualGivenTime = double("dualGivenTime"),

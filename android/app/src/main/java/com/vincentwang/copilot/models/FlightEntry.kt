@@ -46,6 +46,12 @@ data class FlightEntry(
     // Instrument conditions (61.51(b)(3))
     val actualInstrumentTime: Double = 0.0,
     val simulatedInstrumentTime: Double = 0.0,
+    /** Instrument approaches flown, counted toward 61.57(c) currency. */
+    val approachCount: Int = 0,
+    /** Holding procedures performed, counted toward the other half of the
+     *  61.57(c) instrument currency requirement (along with intercepting
+     *  and tracking courses through electronic navigation). */
+    val holdCount: Int = 0,
 
     // Takeoffs and landings
     val dayTakeoffs: Int = 0,
@@ -102,6 +108,8 @@ data class FlightEntry(
         nvgTime = nvgTime,
         actualInstrumentTime = actualInstrumentTime,
         simulatedInstrumentTime = simulatedInstrumentTime,
+        approachCount = approachCount,
+        holdCount = holdCount,
         dayTakeoffs = dayTakeoffs,
         dayFullStopLandings = dayFullStopLandings,
         dayNonFullStopLandings = dayNonFullStopLandings,
@@ -138,6 +146,8 @@ data class FlightEntry(
             nvgTime = item.nvgTime,
             actualInstrumentTime = item.actualInstrumentTime,
             simulatedInstrumentTime = item.simulatedInstrumentTime,
+            approachCount = item.approachCount,
+            holdCount = item.holdCount,
             dayTakeoffs = item.dayTakeoffs,
             dayFullStopLandings = item.dayFullStopLandings,
             dayNonFullStopLandings = item.dayNonFullStopLandings,
