@@ -44,6 +44,7 @@ import com.vincentwang.copilot.ui.components.CurrencyRow
 import com.vincentwang.copilot.ui.components.FormRow
 import com.vincentwang.copilot.ui.components.FormSection
 import com.vincentwang.copilot.ui.components.HoursRow
+import com.vincentwang.copilot.ui.components.InstrumentCurrencyRow
 
 /**
  * Career totals, FAR 61.57 currency, per-aircraft breakdown, and CSV
@@ -68,6 +69,7 @@ fun ReportScreen(model: LogbookViewModel = viewModel()) {
     val totals = LogbookStats.totals(entries)
     val day = LogbookStats.dayCurrency(entries)
     val night = LogbookStats.nightCurrency(entries)
+    val instrument = LogbookStats.instrumentCurrency(entries)
     val categoryTotals = LogbookStats.categoryTotals(entries)
 
     Scaffold(
@@ -79,14 +81,18 @@ fun ReportScreen(model: LogbookViewModel = viewModel()) {
                 .padding(padding)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Passenger-carrying currency per 61.57(a)/(b) over the last 90 days.
+            // Passenger-carrying currency per 61.57(a)/(b) over the last 90 days,
+            // plus instrument currency per 61.57(c) over the last 6 months.
             FormSection(
-                title = "Currency (last 90 days)",
+                title = "Currency",
                 footer = "14 CFR 61.57 requires 3 takeoffs and 3 landings within the " +
-                    "preceding 90 days (full-stop at night) to carry passengers."
+                    "preceding 90 days (full-stop at night) to carry passengers, and " +
+                    "6 approaches plus holding procedures within the preceding " +
+                    "6 months to fly in instrument conditions."
             ) {
                 CurrencyRow("Day Passengers", day)
                 CurrencyRow("Night Passengers", night)
+                InstrumentCurrencyRow(instrument)
             }
 
             // Career flight-time totals.

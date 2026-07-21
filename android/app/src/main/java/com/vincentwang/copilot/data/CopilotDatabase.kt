@@ -10,7 +10,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 // Room counterpart of PersistenceController (Core Data + CloudKit on iOS).
 @Database(
     entities = [Item::class, AircraftProfile::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class CopilotDatabase : RoomDatabase() {
@@ -40,6 +40,19 @@ abstract class CopilotDatabase : RoomDatabase() {
             }
         }
 
+        /** v2 → v3: instrument approach and hold counts for 61.57(c)
+         *  instrument currency. */
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    "ALTER TABLE items ADD COLUMN approachCount INTEGER NOT NULL DEFAULT 0"
+                )
+                db.execSQL(
+                    "ALTER TABLE items ADD COLUMN holdCount INTEGER NOT NULL DEFAULT 0"
+                )
+            }
+        }
+
         @Volatile
         private var instance: CopilotDatabase? = null
 
@@ -49,7 +62,7 @@ abstract class CopilotDatabase : RoomDatabase() {
                     context.applicationContext,
                     CopilotDatabase::class.java,
                     "copilot.db"
-                ).addMigrations(MIGRATION_1_2).build().also { instance = it }
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build().also { instance = it }
             }
     }
 }

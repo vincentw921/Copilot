@@ -31,6 +31,8 @@ private fun makeEntry(
     dayFullStopLandings: Int = 0,
     nightTakeoffs: Int = 0,
     nightFullStopLandings: Int = 0,
+    approachCount: Int = 0,
+    holdCount: Int = 0,
     notes: String = ""
 ) = FlightEntry(
     date = LocalDate.now().minusDays(daysAgo),
@@ -43,6 +45,8 @@ private fun makeEntry(
     dayFullStopLandings = dayFullStopLandings,
     nightTakeoffs = nightTakeoffs,
     nightFullStopLandings = nightFullStopLandings,
+    approachCount = approachCount,
+    holdCount = holdCount,
     notes = notes
 )
 
@@ -105,6 +109,39 @@ class LogbookStatsTests {
         )
         val status = LogbookStats.dayCurrency(entries)
         assertEquals(0, status.takeoffs)
+        assertFalse(status.isCurrent)
+    }
+
+    @Test
+    fun instrumentCurrencyRequiresApproachesAndHolds() {
+        val entries = listOf(
+            makeEntry(daysAgo = 30, approachCount = 4, holdCount = 1),
+            makeEntry(daysAgo = 60, approachCount = 2)
+        )
+        val status = LogbookStats.instrumentCurrency(entries)
+        assertEquals(6, status.approaches)
+        assertEquals(1, status.holds)
+        assertTrue(status.isCurrent)
+    }
+
+    @Test
+    fun instrumentCurrencyFailsWithoutHolds() {
+        // 6 approaches but no holding procedures logged.
+        val entries = listOf(makeEntry(daysAgo = 10, approachCount = 6))
+        val status = LogbookStats.instrumentCurrency(entries)
+        assertEquals(6, status.approaches)
+        assertEquals(0, status.holds)
+        assertFalse(status.isCurrent)
+    }
+
+    @Test
+    fun instrumentCurrencyExcludesFlightsOlderThan6Months() {
+        val entries = listOf(
+            makeEntry(daysAgo = 200, approachCount = 6, holdCount = 2)
+        )
+        val status = LogbookStats.instrumentCurrency(entries)
+        assertEquals(0, status.approaches)
+        assertEquals(0, status.holds)
         assertFalse(status.isCurrent)
     }
 
@@ -180,6 +217,14 @@ class CsvExporterTests {
         val csv = CsvExporter.csv(listOf(entry))
         assertTrue(csv.contains("Cross Country"))
         assertTrue(csv.trimEnd().split("\n")[1].contains("2.0"))
+    }
+
+    @Test
+    fun csvIncludesApproachAndHoldColumns() {
+        val entry = makeEntry(approachCount = 3, holdCount = 1)
+        val csv = CsvExporter.csv(listOf(entry))
+        assertTrue(csv.contains("Approaches,Holds"))
+        assertTrue(csv.trimEnd().split("\n")[1].contains("0.0,3,1,0"))
     }
 
     @Test

@@ -14,7 +14,7 @@ enum CSVExporter {
     static let headers = [
         "Date", "Aircraft Type", "Category", "Class", "Registration", "From", "To",
         "Total Time", "PIC", "SIC", "Solo", "Cross Country", "Night", "NVG",
-        "Actual Instrument", "Simulated Instrument",
+        "Actual Instrument", "Simulated Instrument", "Approaches", "Holds",
         "Day Takeoffs", "Day Full-Stop Landings", "Day Non-Full-Stop Landings",
         "Night Takeoffs", "Night Full-Stop Landings", "Night Non-Full-Stop Landings",
         "Dual Given", "Dual Received", "Simulator",
@@ -39,6 +39,7 @@ enum CSVExporter {
                 hours(e.totalTime), hours(e.picTime), hours(e.sicTime),
                 hours(e.soloTime), hours(e.xcTime), hours(e.nightTime), hours(e.nvgTime),
                 hours(e.actualInstrumentTime), hours(e.simulatedInstrumentTime),
+                String(e.approachCount), String(e.holdCount),
                 String(e.dayTakeoffs), String(e.dayFullStopLandings), String(e.dayNonFullStopLandings),
                 String(e.nightTakeoffs), String(e.nightFullStopLandings), String(e.nightNonFullStopLandings),
                 hours(e.dualGivenTime), hours(e.dualReceivedTime), hours(e.simulatorTime),

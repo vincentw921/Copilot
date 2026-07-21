@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.vincentwang.copilot.models.CurrencyStatus
 import com.vincentwang.copilot.models.FlightEntry
+import com.vincentwang.copilot.models.InstrumentCurrencyStatus
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -79,6 +80,29 @@ fun CurrencyRow(title: String, status: CurrencyStatus) {
             Text(title, modifier = Modifier.weight(1f).padding(start = 8.dp))
             Text(
                 "${status.takeoffs} T/O · ${status.landings} LDG",
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontFamily = FontFamily.Monospace,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}
+
+/** Green/red instrument-currency line: approach count plus whether
+ *  holding procedures were logged within the window
+ *  (InstrumentCurrencyRow on iOS). */
+@Composable
+fun InstrumentCurrencyRow(status: InstrumentCurrencyStatus) {
+    FormRow {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Icon(
+                if (status.isCurrent) Icons.Filled.CheckCircle else Icons.Filled.Cancel,
+                contentDescription = if (status.isCurrent) "Current" else "Not current",
+                tint = if (status.isCurrent) Color(0xFF34A853) else MaterialTheme.colorScheme.error
+            )
+            Text("Instrument", modifier = Modifier.weight(1f).padding(start = 8.dp))
+            Text(
+                "${status.approaches} APP · ${status.holds} HOLD",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontFamily = FontFamily.Monospace,
                 style = MaterialTheme.typography.bodyMedium

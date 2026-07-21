@@ -43,6 +43,19 @@ data class CurrencyStatus(
     val isCurrent: Boolean get() = takeoffs >= 3 && landings >= 3
 }
 
+/** Result of a 14 CFR 61.57(c) instrument currency check. */
+data class InstrumentCurrencyStatus(
+    /** Instrument approaches logged within the preceding 6 calendar months. */
+    val approaches: Int,
+    /** Holding procedures logged within the same window. */
+    val holds: Int
+) {
+    /** True when both parts of 61.57(c) are satisfied: 6 approaches, plus
+     *  at least one holding procedure (and course tracking), within the
+     *  preceding 6 months. */
+    val isCurrent: Boolean get() = approaches >= 6 && holds >= 1
+}
+
 /** Total time flown in one category (and class, when logged). */
 data class CategoryClassTotal(
     val category: AircraftCategory,
@@ -125,6 +138,23 @@ object LogbookStats {
         )
     }
 
-    /** The start of the preceding-90-day window used by 61.57. */
+    /** Instrument currency per 61.57(c): 6 instrument approaches, holding
+     *  procedures, and intercepting/tracking courses, all within the
+     *  preceding 6 calendar months. */
+    fun instrumentCurrency(
+        entries: List<FlightEntry>,
+        asOf: LocalDate = LocalDate.now()
+    ): InstrumentCurrencyStatus {
+        val recent = entries.filter { it.date >= instrumentWindowStart(asOf) }
+        return InstrumentCurrencyStatus(
+            approaches = recent.sumOf { it.approachCount },
+            holds = recent.sumOf { it.holdCount }
+        )
+    }
+
+    /** The start of the preceding-90-day window used by 61.57(a)/(b). */
     private fun windowStart(asOf: LocalDate): LocalDate = asOf.minusDays(90)
+
+    /** The start of the preceding-6-month window used by 61.57(c). */
+    private fun instrumentWindowStart(asOf: LocalDate): LocalDate = asOf.minusMonths(6)
 }
