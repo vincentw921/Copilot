@@ -192,6 +192,13 @@ struct CSVExporterTests {
         #expect(csv.split(separator: "\n")[1].contains("2.0"))
     }
 
+    @Test func csvIncludesApproachAndHoldColumns() {
+        let entry = makeEntry(approachCount: 3, holdCount: 1)
+        let csv = CSVExporter.csv(for: [entry])
+        #expect(csv.contains("Approaches,Holds"))
+        #expect(csv.split(separator: "\n")[1].contains("0.0,3,1,0"))
+    }
+
     @Test func entryValidationRequiresCoreFields() {
         #expect(makeEntry().isValid)
 
